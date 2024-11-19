@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",  // Changed to 'commonjs' to match the typical Node.js setup
+    "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": true,
+    "declaration": true, // Add this line
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "strict": true,
+    "target": "ES6"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
