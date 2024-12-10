@@ -6,6 +6,7 @@ import authRouter from "./routers/auth.routers";
 import userRouter from "./routers/user.routers.ts";
 import propertyRouter from "./routers/property.routers.ts";
 import errorMiddleware from "./middlewares/errorMiddleware.ts";
+import cors from "cors";
 
 
 
@@ -15,7 +16,7 @@ dotenv.config();
 
 
 // connect mongoDB
-const mongodbStr: string = `mongodb+srv://${process.env.mongodb_username}:${process.env.mongodb_password}@${process.env.mongodb_cluster}.giap0.mongodb.net/?retryWrites=true&w=majority`;
+const mongodbStr: string = `mongodb+srv://${process.env.mongodb_username}:${process.env.mongodb_password}@${process.env.mongodb_cluster}.giap0.mongodb.net/?retryWrites=true&w=majority&appName=nestFinderCluster`;
 
 
 
@@ -39,6 +40,11 @@ const app: Application = express();
 
 
 
+// Use Cors
+app.use(cors());
+
+
+
 // Body parser
 app.use(express.json());
 
@@ -51,7 +57,9 @@ app.use(cookieParser());
 
 // router defined
 app.use("/api/auth", authRouter);
+
 app.use("/api/user", userRouter);
+
 app.use("/api/property", propertyRouter);
 
 
@@ -63,5 +71,5 @@ app.use(errorMiddleware);
 
 // PORT defined
 app.listen(port, (): void => {
-  console.log("Server running on PORT:", port);
+  console.log("CORS Server PORT:", port);
 });

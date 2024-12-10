@@ -3,28 +3,62 @@ import { PropertyModelType } from "../types/index.types";
 
 const property = new mongoose.Schema(
   {
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
+    name: {
       type: String,
       required: true,
     },
-    avatar: {
+    description: {
       type: String,
-      default: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    regularPrice: {
+      type: Number,
+      required: true,
+    },
+    discountPrice: {
+      type: Number,
+      required: true,
+    },
+    bathrooms: {
+      type: Number,
+      required: true,
+    },
+    bedrooms: {
+      type: Number,
+      required: true,
+    },
+    furnished: {
+      type: Boolean,
+      required: true,
+    },
+    parking: {
+      type: Boolean,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+    },
+    offer: {
+      type: Boolean,
+      required: true,
+    },
+    imageUrls: {
+      type: Array,
+      required: true,
+    },
+    userRef: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }
 );
 
-const PropertySchema: Model<PropertyModelType> = mongoose.model<PropertyModelType>("Auth", property);
+const PropertySchema: Model<PropertyModelType> = mongoose.model<PropertyModelType>("Property", property);
 
 export default PropertySchema;
