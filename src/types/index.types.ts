@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, ObjectId } from "mongoose";
 
 
 
@@ -10,15 +10,41 @@ export type AuthModelType = Document & {
   email: string;
   password: string;
   number: number;
-  avatar?: string;
+  avatar: string;
   createdAt?: Date;
   updatedAt?: Date;
 };
 
 
+// User Authentication Data return type
+export type UserDataType = {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  number: number;
+  avatar: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  _id: string | ObjectId;
+  __v: number;
+};
+
+
+export type AuthResponseType = {
+  _id: string | ObjectId;
+  [key: string]: any;
+};
+
+
+
+
 
 // User Types
 export type UserModelType = Document & {
+  firstName: string;
+  lastName: string;
+  number: number;
   username: string;
   email: string;
   password: string;
@@ -47,21 +73,3 @@ export type PropertyModelType = Document & {
   createdAt?: Date;
   updatedAt?: Date;
 };
-
-
-
-// Try Catch Error Type
-export type MongodbError = {
-  errorResponse: {
-    index: number;
-    code: number;
-    errmsg: string;
-    [key: string]: any;
-  },
-  keyPattern: {
-    [key: string]: any;
-  },
-  keyValue: {
-    [key: string]: any;
-  }
-}

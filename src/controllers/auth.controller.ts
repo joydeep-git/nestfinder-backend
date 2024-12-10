@@ -1,25 +1,32 @@
 import { NextFunction, Request, Response } from "express";
-import ErrorHandler from "../utils/ErrorHandler";
-import errorMiddleware from "../middlewares/errorMiddleware";
 import bcrypt from "bcryptjs";
 import AuthSchema from "../schema.models/auth.schema";
 import { randomUsernameGenerator } from "../utils/utilityFunctions.ts";
+import { AuthModelType } from "../types/index.types.ts";
+import ErrorHandler from "../utils/ErrorHandler";
+import { mongooseErrorHandler } from "../utils/mongooseErrorHandler.ts";
 
 
-export const signUpController = async (req: Request, res: Response, next: NextFunction) => {
+// SignUp Controller
 
-  const { firstName, lastName, email, password, userName, number } = req.body;
-
+export const signUpController = async ( req: Request, res: Response, next: NextFunction ) => {
+  const { firstName, lastName, email, password, userName, number, avatar } = req.body;
 
   // Checking Field data
-  if (!firstName) return next(new ErrorHandler({ status: 400, message: "First Name Required" }));
-  if (!lastName) return next(new ErrorHandler({ status: 400, message: "Last Name Required" }));
-  if (!email) return next(new ErrorHandler({ status: 400, message: "Email Required" }));
-  if (!password) return next(new ErrorHandler({ status: 400, message: "Password Required" }));
-  if (!number) return next(new ErrorHandler({ status: 400, message: "Phone Number Required" }));
+  if (!firstName)
+    return next(new ErrorHandler({ status: 400, message: "First Name Required" }));
+  if (!lastName)
+    return next(new ErrorHandler({ status: 400, message: "Last Name Required" }));
+  if (!email)
+    return next(new ErrorHandler({ status: 400, message: "Email Required" }));
+  if (!password)
+    return next(new ErrorHandler({ status: 400, message: "Password Required" }));
+  if (!number)
+    return next(new ErrorHandler({ status: 400, message: "Phone Number Required" }));
 
 
   const hashedPass: string = await bcrypt.hash(password, 10);
+
 
   try {
     const user = new AuthSchema({
@@ -28,20 +35,26 @@ export const signUpController = async (req: Request, res: Response, next: NextFu
       email,
       password: hashedPass,
       username: userName ?? randomUsernameGenerator(firstName),
-      number
+      number,
+      avatar,
     });
 
     await user.save();
 
-    res.status(201).json({message: "User Created!", data: user});
+    const { password: _, ...userData } = user.toObject();
 
-  } catch (err: unknown) {
+    res.status(201).json({
+      message: "Account registered successfully!",
+      data: userData,
+    });
+  } catch (err: any) {
 
-    next(new ErrorHandler({ status: 500, message: JSON.stringify(err) }));
+    if (err.code === 11000) return next(mongooseErrorHandler(err));
 
+    next(new ErrorHandler({ status: 500, message: "Internal Server Error" }));
   }
+};
 
-}
 
 
 export const signInController = (req: Request, res: Response, next: NextFunction) => {

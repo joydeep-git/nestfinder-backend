@@ -16,7 +16,7 @@ dotenv.config();
 
 
 // connect mongoDB
-const mongodbStr: string = `mongodb+srv://${process.env.mongodb_username}:${process.env.mongodb_password}@${process.env.mongodb_cluster}.giap0.mongodb.net/?retryWrites=true&w=majority&appName=nestFinderCluster`;
+const mongodbStr: string = `mongodb+srv://${process.env.mongodb_username}:${process.env.mongodb_password}@${process.env.mongodb_cluster}.giap0.mongodb.net/?retryWrites=true&w=majority&appName=${process.env.mongodb_cluster}`;
 
 
 
