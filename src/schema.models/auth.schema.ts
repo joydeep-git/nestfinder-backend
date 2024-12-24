@@ -1,5 +1,6 @@
 import mongoose, { Model } from "mongoose";
-import { AuthModelType } from "../types/index.types";
+import { AuthModelType } from "../types/index.types.ts";
+
 
 const auth = new mongoose.Schema(
   {
@@ -20,16 +21,20 @@ const auth = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      validate: {
+        validator: (v: string) => /^\S+@\S+\.\S+$/.test(v),
+        message: "Please enter a valid email address",
+      },
     },
     password: {
       type: String,
       required: true,
     },
     number: {
-      type: Number,
+      type: String,
       required: true,
       validate: {
-        validator: (v: number) => v.toString().length === 10,
+        validator: (v: string) => /^\d{10}$/.test(v),
         message: "Please enter a valid 10-digit number",
       },
       unique: true,

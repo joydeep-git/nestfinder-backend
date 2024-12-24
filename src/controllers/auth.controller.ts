@@ -1,16 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import AuthSchema from "../schema.models/auth.schema";
+import AuthSchema from "../schema.models/auth.schema.ts";
 import { randomUsernameGenerator } from "../utils/utilityFunctions.ts";
-import { AuthModelType } from "../types/index.types.ts";
-import ErrorHandler from "../utils/ErrorHandler";
+import { AuthModelType, UserDataType } from "../types/index.types.ts";
+import ErrorHandler from "../utils/ErrorHandler.ts";
 import { mongooseErrorHandler } from "../utils/mongooseErrorHandler.ts";
+import jwt from "jsonwebtoken";
 
 
-// SignUp Controller
+// User SignUp
+export const signUpController = async (req: Request, res: Response, next: NextFunction) => {
 
-export const signUpController = async ( req: Request, res: Response, next: NextFunction ) => {
-  const { firstName, lastName, email, password, userName, number, avatar } = req.body;
+
+  const { firstName, lastName, email, password, username, number, avatar } = req.body;
 
   // Checking Field data
   if (!firstName)
@@ -25,16 +27,16 @@ export const signUpController = async ( req: Request, res: Response, next: NextF
     return next(new ErrorHandler({ status: 400, message: "Phone Number Required" }));
 
 
-  const hashedPass: string = await bcrypt.hash(password, 10);
-
-
   try {
+
+    const hashedPass: string = await bcrypt.hash(password, 10);
+
     const user = new AuthSchema({
       firstName,
       lastName,
       email,
       password: hashedPass,
-      username: userName ?? randomUsernameGenerator(firstName),
+      username: username ?? randomUsernameGenerator(firstName),
       number,
       avatar,
     });
@@ -48,25 +50,73 @@ export const signUpController = async ( req: Request, res: Response, next: NextF
       data: userData,
     });
   } catch (err: any) {
-
-    if (err.code === 11000) return next(mongooseErrorHandler(err));
-
-    next(new ErrorHandler({ status: 500, message: "Internal Server Error" }));
+    return next(mongooseErrorHandler(err));
   }
 };
 
 
+// User Login
+export const signInController = async (req: Request, res: Response, next: NextFunction) => {
 
-export const signInController = (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body;
+
+  try {
+
+    const existingUser: UserDataType | null = await AuthSchema.findOne({ email });
+
+    if (!existingUser) {
+      return next(new ErrorHandler({ status: 401, message: "No user found!" }))
+    } else {
+
+      const validatePassword = await bcrypt.compare(password, existingUser.password);
+
+      if (!validatePassword) {
+
+        return next(new ErrorHandler({ status: 404, message: "Wrong password!" }));
+
+      } else {
+
+        const secretKey = process.env.JWT_SECRET_KEY || "secret_key";
+
+        const token = jwt.sign({ id: existingUser._id }, secretKey);
+
+        const { password, ...userInfo } = existingUser._doc;
+
+        res
+          .status(200)
+          .cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 24 * 60 * 60 * 1000, // 24 hour
+            sameSite: "strict"
+          })
+          .json({
+            message: "Logged In!",
+            user: userInfo
+          });
+
+      }
+
+    }
+
+  } catch (err) {
+    return next(mongooseErrorHandler(err));
+  }
 
 }
 
 
-export const googleAuthController = (req: Request, res: Response, next: NextFunction) => {
-
-}
-
-
+// User SignOut
 export const signOutController = (req: Request, res: Response, next: NextFunction) => {
+
+  if (!req.cookies.token) {
+    return next(new ErrorHandler({ status: 400, message: "No active session found!" }));
+  }
+
+  try {
+    res.clearCookie("token").status(200).json({ message: "User Logged Out" });
+  } catch (err) {
+    return next(new ErrorHandler({status: 404, message: "Unable to logout!"}))
+  }
 
 }

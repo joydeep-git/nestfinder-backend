@@ -16,13 +16,14 @@ export type AuthModelType = Document & {
 };
 
 
-// User Authentication Data return type
-export type UserDataType = {
+// User Authentication Data return types
+export type UserDetailsType = {
   firstName: string;
   lastName: string;
   username: string;
   email: string;
   number: number;
+  password: string;
   avatar: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -30,14 +31,11 @@ export type UserDataType = {
   __v: number;
 };
 
-
-export type AuthResponseType = {
-  _id: string | ObjectId;
+export type UserDataType = {
+  _id: number;
+  _doc: UserDetailsType;
   [key: string]: any;
-};
-
-
-
+}
 
 
 // User Types

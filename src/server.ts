@@ -7,7 +7,8 @@ import userRouter from "./routers/user.routers.ts";
 import propertyRouter from "./routers/property.routers.ts";
 import errorMiddleware from "./middlewares/errorMiddleware.ts";
 import cors from "cors";
-
+import os from "os";
+import { Request, Response } from "express";
 
 
 // config DOTENV
@@ -53,6 +54,16 @@ app.use(express.json());
 // cookie-parser
 app.use(cookieParser());
 
+
+app.post("/test", (req, res) => {
+  console.log("Received Device Info:", req.body);
+
+
+  res.json({
+    message: "TEST1",
+    deviceInfo: req.body,
+  });
+});
 
 
 // router defined
