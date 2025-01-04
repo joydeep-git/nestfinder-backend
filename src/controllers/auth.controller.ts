@@ -25,6 +25,8 @@ export const signUpController = async (req: Request, res: Response, next: NextFu
     return next(new ErrorHandler({ status: 400, message: "Password Required" }));
   if (!number)
     return next(new ErrorHandler({ status: 400, message: "Phone Number Required" }));
+  if(!username)
+    return next(new ErrorHandler({status: 400, message: "Username Required"}));
 
 
   try {
