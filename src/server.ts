@@ -4,11 +4,9 @@ import mongoose, { Error as mongooseError } from "mongoose";
 import cookieParser from "cookie-parser";
 import authRouter from "./routers/auth.routers";
 import userRouter from "./routers/user.routers.ts";
-import propertyRouter from "./routers/property.routers.ts";
-import errorMiddleware from "./middlewares/errorMiddleware.ts";
 import cors from "cors";
-import os from "os";
-import { Request, Response } from "express";
+import productRouter from "./routers/product.routers.ts";
+import errorMiddleware from "./middlewares/errorMiddleware.ts";
 
 
 // config DOTENV
@@ -42,7 +40,10 @@ const app: Application = express();
 
 
 // Use Cors
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:3000", // frontend URL
+    credentials: true, // Allow cookies
+  }));
 
 
 
@@ -53,17 +54,6 @@ app.use(express.json());
 
 // cookie-parser
 app.use(cookieParser());
-
-
-app.post("/test", (req, res) => {
-  console.log("Received Device Info:", req.body);
-
-
-  res.json({
-    message: "TEST1",
-    deviceInfo: req.body,
-  });
-});
 
 
 // router defined

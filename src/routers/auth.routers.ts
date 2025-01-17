@@ -3,7 +3,7 @@ import express, {Router} from "express";
 import {
   signInController,
   signOutController,
-  signUpController
+  signUpController, verifyToken
 } from "../controllers/auth.controller.ts";
 
 
@@ -12,9 +12,10 @@ const authRouter: Router = express.Router();
 
 
 // define methods and functions
-authRouter.post("/signup", signUpController);
-authRouter.post("/signin", signInController);
-authRouter.post("/signout", signOutController);
+authRouter.post("/sign-up", signUpController);
+authRouter.post("/sign-in", signInController);
+authRouter.get("/sign-out", signOutController);
+authRouter.get("/verify-token", verifyToken);
 
 
 export default authRouter;
