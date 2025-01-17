@@ -1,7 +1,7 @@
 import mongoose, { Model } from "mongoose";
-import { PropertyModelType } from "../types/index.types";
+import { ProductModelType } from "../types/index.types";
 
-const property = new mongoose.Schema(
+const product = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -59,6 +59,6 @@ const property = new mongoose.Schema(
   { timestamps: true }
 );
 
-const PropertySchema: Model<PropertyModelType> = mongoose.model<PropertyModelType>("Property", property);
+const ProductSchema: Model<ProductModelType> = mongoose.model<ProductModelType>("Property", product);
 
-export default PropertySchema;
+export default ProductSchema;
