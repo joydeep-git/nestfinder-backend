@@ -31,6 +31,7 @@ export type UserDetailsType = {
   __v: number;
 };
 
+
 export type UserDataType = {
   _id: number;
   _doc: UserDetailsType;
@@ -54,7 +55,7 @@ export type UserModelType = Document & {
 
 
 // Property Types
-export type PropertyModelType = Document & {
+export type ProductModelType = Document & {
   name: string;
   description: string;
   address: string;
@@ -71,3 +72,9 @@ export type PropertyModelType = Document & {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+
+export interface JwtDecodeType {
+  id: string;
+  iat: number;
+}
