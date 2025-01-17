@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { mongooseErrorHandler } from "../utils/mongooseErrorHandler.ts";
 import ErrorHandler from "../utils/ErrorHandler.ts";
+import AuthSchema from "../schema.models/auth.schema.ts";
 
 export const updateUserController = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -13,3 +14,12 @@ export const updateUserController = async (req: Request, res: Response, next: Ne
   }
 
 };
+
+
+export const deleteUserController = async (req: Request, res: Response, next: NextFunction)=> {
+  const { id } = req.body;
+
+  const user = await AuthSchema.findByIdAndDelete(id);
+
+  res.status(200).json(user);
+}
