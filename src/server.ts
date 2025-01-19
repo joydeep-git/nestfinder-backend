@@ -1,12 +1,13 @@
-import express, { Application } from "express";
+import express, {Application} from "express";
 import dotenv from "dotenv";
-import mongoose, { Error as mongooseError } from "mongoose";
+import mongoose, {Error as mongooseError} from "mongoose";
 import cookieParser from "cookie-parser";
 import authRouter from "./routers/auth.routers";
 import userRouter from "./routers/user.routers.ts";
 import cors from "cors";
 import productRouter from "./routers/product.routers.ts";
 import errorMiddleware from "./middlewares/errorMiddleware.ts";
+import {verifyToken} from "./controllers/auth.controller.ts";
 
 
 // config DOTENV
@@ -15,7 +16,7 @@ dotenv.config();
 
 
 // connect mongoDB
-const mongodbStr: string = `mongodb+srv://${process.env.mongodb_username}:${process.env.mongodb_password}@${process.env.mongodb_cluster}.giap0.mongodb.net/?retryWrites=true&w=majority&appName=${process.env.mongodb_cluster}`;
+const mongodbStr: string = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_CLUSTER}.giap0.mongodb.net/?retryWrites=true&w=majority&appName=${process.env.MONGODB_CLUSTER}`;
 
 
 
@@ -41,7 +42,7 @@ const app: Application = express();
 
 // Use Cors
 app.use(cors({
-    origin: "http://localhost:3000", // frontend URL
+    origin: process.env.CLIENT_URL || "http://localhost:3000", // frontend URL
     credentials: true, // Allow cookies
   }));
 
@@ -59,7 +60,7 @@ app.use(cookieParser());
 // router defined
 app.use("/api/auth", authRouter);
 
-app.use("/api/user", userRouter);
+app.use("/api/user", verifyToken(true), userRouter);
 
 app.use("/api/product", productRouter);
 
