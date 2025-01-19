@@ -39,6 +39,6 @@
     "firebase": "^11.0.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.10.0",
-    "mongoose": "^8.8.2"
+    "mongoose": "^8.9.5"
   }
 }
