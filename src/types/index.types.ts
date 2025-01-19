@@ -1,5 +1,4 @@
-import { Document, ObjectId } from "mongoose";
-
+import {Document, ObjectId} from "mongoose";
 
 
 // Auth Types
@@ -27,7 +26,7 @@ export type UserDetailsType = {
   avatar: string;
   createdAt?: Date;
   updatedAt?: Date;
-  _id: string | ObjectId;
+  _id: string | ObjectId | unknown;
   __v: number;
 };
 
