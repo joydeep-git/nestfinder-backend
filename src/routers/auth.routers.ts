@@ -1,10 +1,6 @@
 import express, {Router} from "express";
 
-import {
-  signInController,
-  signOutController,
-  signUpController, verifyToken
-} from "../controllers/auth.controller.ts";
+import {signInController, signOutController, signUpController, verifyToken} from "../controllers/auth.controller.ts";
 
 
 // define router
@@ -15,7 +11,7 @@ const authRouter: Router = express.Router();
 authRouter.post("/sign-up", signUpController);
 authRouter.post("/sign-in", signInController);
 authRouter.get("/sign-out", signOutController);
-authRouter.get("/verify-token", verifyToken);
+authRouter.get("/verify-token", verifyToken(false));
 
 
 export default authRouter;

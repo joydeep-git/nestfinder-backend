@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import bcrypt from "bcryptjs";
 import AuthSchema from "../schema.models/auth.schema.ts";
 import {randomUsernameGenerator} from "../utils/utilityFunctions.ts";
-import {JwtDecodeType, UserDataType} from "../types/index.types.ts";
+import {UserDataType} from "../types/index.types.ts";
 import ErrorHandler from "../utils/ErrorHandler.ts";
 import {mongooseErrorHandler} from "../utils/mongooseErrorHandler.ts";
 import jwt, {JwtPayload} from "jsonwebtoken";
@@ -111,12 +111,14 @@ export const signInController = async (req: Request, res: Response, next: NextFu
 // User SignOut
 export const signOutController = async (req: Request, res: Response, next: NextFunction) => {
 
-  if (!req.cookies.token) {
+  const token: string = req.cookies.token || req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
     return next(new ErrorHandler({status: 400, success: false, message: "No active session found!"}));
   }
 
   try {
-    res.clearCookie("token").status(200).json({message: "Logged Out!", success: true});
+    res.clearCookie("token").status(200).json({status: 200, message: "Logged Out!", success: true});
   } catch (err) {
     return next(new ErrorHandler({status: 404, success: false, message: "Unable to logout!"}))
   }
@@ -125,17 +127,19 @@ export const signOutController = async (req: Request, res: Response, next: NextF
 
 
 // Verify Token
-export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const verifyToken = (useAsMiddleware: boolean = false) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
 
+      const token: string = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
-    if (!req.cookies.token) {
+      if (!token) {
       return next(new ErrorHandler({ success: false, status: 403, message: "No active session, please login." }));
     }
 
     // Verify token
     const secretKey = process.env.JWT_SECRET_KEY || "secret_key";
-    const decoded = jwt.verify(req.cookies.token, secretKey) as JwtPayload;
+      const decoded = jwt.verify(token, secretKey) as JwtPayload;
 
     if (!decoded?.id) {
       return next(new ErrorHandler({ success: false, status: 401, message: "Invalid token!" }));
@@ -148,16 +152,23 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
       return next(new ErrorHandler({ success: false, status: 404, message: "User not found!" }));
     }
 
-    // Send user data
+      if (useAsMiddleware) {
+        req.user = user;
+        next();
+      } else {
+        // Send user data
     res.status(200).json({
       success: true,
       message: "User data fetched successfully.",
       data: user,
     });
-  } catch (err: any) {
+      }
+
+    } catch (err: any) {
     if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError") {
       return next(new ErrorHandler({ success: false, status: 401, message: "Invalid or expired token!" }));
     }
     return next(mongooseErrorHandler(err));
+  }
   }
 };
