@@ -1,12 +1,15 @@
 import express, {Router} from "express";
-import { updateUserController } from "../controllers/user.controller.ts";
+import {deleteUserController, getAllUserProducts, updateUserController} from "../controllers/user.controller.ts";
 
 
 const userRouter: Router = express.Router();
 
 
+userRouter.post("/update-details/:id", updateUserController);
 
-userRouter.post("/update", updateUserController);
+userRouter.delete("/delete-user/:id", deleteUserController);
+
+userRouter.get("/user-products/:id", getAllUserProducts);
 
 
 
