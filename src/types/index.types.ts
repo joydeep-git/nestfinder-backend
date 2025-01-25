@@ -22,7 +22,7 @@ export type UserDetailsType = {
   username: string;
   email: string;
   number: number;
-  password: string;
+  password?: string;
   avatar: string;
   createdAt?: Date;
   updatedAt?: Date;
