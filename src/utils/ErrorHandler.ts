@@ -15,7 +15,7 @@ class ErrorHandler extends Error {
     this.statusCode = status || 500;
     this.success = success ?? false;
 
-    Error.captureStackTrace(this, this.constructor);
+    Error.captureStackTrace ? Error.captureStackTrace(this, this.constructor) : this.stack = new Error(message).stack;
   }
 }
 

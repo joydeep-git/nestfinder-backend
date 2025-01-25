@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import ErrorHandler from "../utils/ErrorHandler";
 
 const errorMiddleware = (
-  err: ErrorHandler | Error,
+  err: ErrorHandler | Error | any,
   req: Request,
   res: Response,
   next: NextFunction
@@ -14,7 +14,7 @@ const errorMiddleware = (
     success: err instanceof ErrorHandler ? err.success : false,
     statusCode,
     message,
-    stack: process.env.NODE_ENV === "production" ? null : err.stack,
+    stack: process.env.NODE_ENV === "production" ? null : err.stack || "No stack trace available",
   });
 };
 
