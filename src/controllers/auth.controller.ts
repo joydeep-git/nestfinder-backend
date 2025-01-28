@@ -87,7 +87,7 @@ export const signInController = async (req: Request, res: Response, next: NextFu
 
       } else {
 
-        const secretKey = process.env.JWT_SECRET_KEY ?? "";
+        const secretKey = process.env.JWT_SECRET_KEY!;
 
         const token = jwt.sign({ id: existingUser._id }, secretKey);
 
