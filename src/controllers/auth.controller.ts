@@ -83,7 +83,7 @@ export const signInController = async (req: Request, res: Response, next: NextFu
 
       if (!validatePassword) {
 
-        return next(new ErrorHandler({ status: 404, success: false, message: "Wrong password!" }));
+        return next(new ErrorHandler({ status: 401, success: false, message: "Wrong password!" }));
 
       } else {
 
@@ -146,7 +146,7 @@ export const verifyToken = (useAsMiddleware: boolean = false) => {
       const token: string = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
       if (!token) {
-        return next(new ErrorHandler({ success: false, status: 403, message: "No active session, please login." }));
+        return next(new ErrorHandler({ success: false, status: 403, message: "Please login!" }));
       }
 
       // Verify token
@@ -166,7 +166,7 @@ export const verifyToken = (useAsMiddleware: boolean = false) => {
       }
 
       if (useAsMiddleware) {
-        if (Number.parseInt(req.params.id) !== user._id) {
+        if (req.params.id != user._id) {
           return next(new ErrorHandler({ status: 403, message: "Unauthenticated!" }));
         }
 
