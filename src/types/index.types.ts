@@ -73,6 +73,28 @@ export type ProductModelType = Document & {
 };
 
 
+export type ProductDetailsResponse = {
+  _id: string;
+  name: string;
+  description: string;
+  address: string;
+  regularPrice: number;
+  discountAmount: number;
+  bathrooms: number;
+  bedrooms: number;
+  furnished: boolean;
+  parking: boolean;
+  type: string;
+  offer: boolean;
+  imageUrls: string[];
+  userRef: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  _v: number;
+}
+
+
+
 export interface JwtDecodeType {
   id: string;
   iat: number;
