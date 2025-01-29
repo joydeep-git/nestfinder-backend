@@ -59,7 +59,7 @@ export type ProductModelType = Document & {
   description: string;
   address: string;
   regularPrice: number;
-  discountPrice: number;
+  discountAmount: number;
   bathrooms: number;
   bedrooms: number;
   furnished: boolean;
