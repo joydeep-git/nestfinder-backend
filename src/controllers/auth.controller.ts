@@ -9,7 +9,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 
 // User SignUp
-export const signUpController = async (req: Request, res: Response, next: NextFunction) => {
+export const signUp = async (req: Request, res: Response, next: NextFunction) => {
 
 
   const { firstName, lastName, email, password, number } = req.body;
@@ -60,7 +60,7 @@ export const signUpController = async (req: Request, res: Response, next: NextFu
 
 
 // User Login
-export const signInController = async (req: Request, res: Response, next: NextFunction) => {
+export const signIn = async (req: Request, res: Response, next: NextFunction) => {
 
   const { email, password } = req.body;
 
@@ -121,7 +121,7 @@ export const signInController = async (req: Request, res: Response, next: NextFu
 
 
 // User SignOut
-export const signOutController = async (req: Request, res: Response, next: NextFunction) => {
+export const signOut = async (req: Request, res: Response, next: NextFunction) => {
 
   const token: string = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
@@ -150,7 +150,7 @@ export const verifyToken = (useAsMiddleware: boolean = false) => {
       }
 
       // Verify token
-      const secretKey = process.env.JWT_SECRET_KEY || "";
+      const secretKey = process.env.JWT_SECRET_KEY!;
 
       const decoded = jwt.verify(token, secretKey) as JwtPayload;
 

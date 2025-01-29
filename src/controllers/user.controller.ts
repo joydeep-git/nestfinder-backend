@@ -1,10 +1,8 @@
-import {NextFunction, Request, Response} from "express";
-import {mongooseErrorHandler} from "../utils/mongooseErrorHandler.ts";
+import { NextFunction, Request, Response } from "express";
+import { mongooseErrorHandler } from "../utils/mongooseErrorHandler.ts";
 import ErrorHandler from "../utils/ErrorHandler.ts";
 import AuthSchema from "../schema.models/auth.schema.ts";
 import ProductSchema from "../schema.models/product.schema.ts";
-import { UserDetailsType } from "../types/index.types.ts";
-
 
 
 // Update User
@@ -69,11 +67,12 @@ export const updateProfilePicture = async (req: Request, res: Response, next: Ne
 }
 
 
+
 // Get user's all Products
 export const getAllUserProducts = async (req: Request, res: Response, next: NextFunction) => {
 
-  if (req.user?._id === req.params.id) {
-    const allProducts = await ProductSchema.find({userRef: req.user._id});
+  if (req.user?._id == req.params.id ) {
+    const allProducts = await ProductSchema.find({ userRef: req.user._id });
 
     res.status(200).json({
       success: true,
@@ -81,7 +80,7 @@ export const getAllUserProducts = async (req: Request, res: Response, next: Next
       data: allProducts
     })
   } else {
-    return next(new ErrorHandler({status: 403, message: "Unauthorized!", success: false}))
+    return next(new ErrorHandler({ status: 403, message: "Unauthorized!", success: false }))
   }
 
 };
@@ -89,15 +88,15 @@ export const getAllUserProducts = async (req: Request, res: Response, next: Next
 
 
 // Delete Account
-export const deleteUserController = async (req: Request, res: Response, next: NextFunction)=> {
+export const deleteUserController = async (req: Request, res: Response, next: NextFunction) => {
 
-  try{
+  try {
 
-    const deletedUser = await AuthSchema.findByIdAndDelete( req.user?._id ).select("-password");
+    const deletedUser = await AuthSchema.findByIdAndDelete(req.user?._id).select("-password");
 
-    res.clearCookie("token").status(200).json({success: true, message: "Account Deleted Successfully!", status: 201, data: deletedUser });
-  
-  }catch(err) {
+    res.clearCookie("token").status(200).json({ success: true, message: "Account Deleted Successfully!", status: 201, data: deletedUser });
+
+  } catch (err) {
 
     return next(mongooseErrorHandler(err));
 
