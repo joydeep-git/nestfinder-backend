@@ -8,7 +8,7 @@ const productRouter: Router = express.Router();
 
 productRouter.post("/create/:id", verifyToken(true) , createProduct);
 
-productRouter.get("/product-details/:id/:productId", getProductDetails);
+productRouter.get("/get-product-details/:id/:productId", getProductDetails);
 
 productRouter.post("/update-product/:id/:productId", updateProductDetails);
 
