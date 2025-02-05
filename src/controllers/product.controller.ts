@@ -2,8 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import ProductSchema from "../schema.models/product.schema";
 import ErrorHandler from "../utils/ErrorHandler";
 import { mongooseErrorHandler } from "../utils/mongooseErrorHandler";
-import { stringify } from "querystring";
-import mongoose from "mongoose";
 
 
 
@@ -15,7 +13,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
 
         await newProduct.save();
 
-        res.status(201).json({ success: true, message: "Product Created!", data: newProduct });
+        res.status(201).json({ success: true, message: "Registration Completed!", data: newProduct });
 
     } catch (err) {
         next(mongooseErrorHandler(err));
@@ -28,9 +26,18 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
 // Get Single Product Details
 export const getProductDetails = async (req: Request, res: Response, next: NextFunction) => {
 
-    const { productId } = req.params;
+    try {
+        const productDetails = await ProductSchema.findById(req.params.productId);
 
+        if (productDetails?.userRef == req.user?._id) {
+            res.status(200).json({ success: true, message: "Product Details Fetched!", data: productDetails });
+        } else {
+            return next(new ErrorHandler({ status: 403, success: false, message: "You are not permitted!" }));
+        }
 
+    } catch (err) {
+        next(mongooseErrorHandler(err));
+    }
 
 };
 
@@ -44,7 +51,7 @@ export const updateProductDetails = async (req: Request, res: Response, next: Ne
     try {
         const productDetails = await ProductSchema.findById(productId);
 
-        if (productDetails?.userRef === id) {
+        if (String(productDetails?.userRef) === id) {
             res.status(200).json({ success: true, message: "Product Details Fetched!", data: productDetails });
         } else {
             next(new ErrorHandler({ status: 403, success: false, message: "You are not permitted!" }));
@@ -61,15 +68,23 @@ export const updateProductDetails = async (req: Request, res: Response, next: Ne
 // Delete single Product
 export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
 
-    const product = await ProductSchema.findById(req.params.productId);
+    try {
+        const product = await ProductSchema.findById(req.params.productId);
 
-    if ( req.user?._id == product?.userRef ) {
-        try {
-            await ProductSchema.findByIdAndDelete(req.params.productId);
-        } catch (err) {
-            next(mongooseErrorHandler(err));
+        if (!product) {
+            return next(new ErrorHandler({ status: 404, message: "Product not found!", success: false }));
         }
-    } else {
-        return next(new ErrorHandler({ status: 403, message: "You are not permitted!", success: false }));
+
+        if (String(product.userRef) !== String(req.user?._id)) {
+            return next(new ErrorHandler({ status: 403, message: "You are not permitted!", success: false }));
+        }
+
+        const data = await ProductSchema.findByIdAndDelete(req.params.productId);
+
+        res.status(200).json({ success: true, message: "Product Deleted Successfully!", data });
+
+    } catch (err) {
+        next(mongooseErrorHandler(err));
     }
-}
+};
+
