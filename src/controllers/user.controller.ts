@@ -2,11 +2,10 @@ import { NextFunction, Request, Response } from "express";
 import { mongooseErrorHandler } from "../utils/mongooseErrorHandler.ts";
 import ErrorHandler from "../utils/ErrorHandler.ts";
 import AuthSchema from "../schema.models/auth.schema.ts";
-import ProductSchema from "../schema.models/product.schema.ts";
 
 
 // Update User
-export const updateUserController = async (req: Request, res: Response, next: NextFunction) => {
+export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   const { firstName, lastName, number, username } = req.body;
 
   try {
@@ -68,27 +67,16 @@ export const updateProfilePicture = async (req: Request, res: Response, next: Ne
 
 
 
-// Get user's all Products
-export const getAllUserProducts = async (req: Request, res: Response, next: NextFunction) => {
+// Change Password
+// export const changePassword = (req: Request, res: Response, next: NextFunction) => {
 
-  if (req.user?._id == req.params.id ) {
-    const allProducts = await ProductSchema.find({ userRef: req.user._id });
+// };
 
-    res.status(200).json({
-      success: true,
-      message: "All Listings",
-      data: allProducts
-    })
-  } else {
-    return next(new ErrorHandler({ status: 403, message: "Unauthorized!", success: false }))
-  }
-
-};
 
 
 
 // Delete Account
-export const deleteUserController = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
 
