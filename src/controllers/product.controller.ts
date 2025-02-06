@@ -23,6 +23,24 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
 
 
 
+// Get owner's all products
+export const ownerAllProducts = async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+
+        const allProducts = await ProductSchema.find({ userRef: req.user!._id }).lean();
+
+        res.status(200).json({ success: true, message: `All Products of ${req.user!.firstName} fetched!`, data: allProducts });
+
+    } catch(err) {
+        return next(mongooseErrorHandler(err));
+    }
+
+};
+
+
+
+
 // Get Single Product Details
 export const getProductDetails = async (req: Request, res: Response, next: NextFunction) => {
 
