@@ -1,6 +1,6 @@
 import express, {Router} from "express";
 import {
-    deleteUser, updateProfilePicture, updateUser,
+    deleteUser, getUser, updateProfilePicture, updateUser,
     // changePassword
 } from "../controllers/user.controller.ts";
 import {verifyToken} from "../controllers/auth.controller.ts";
@@ -8,6 +8,9 @@ import {verifyToken} from "../controllers/auth.controller.ts";
 
 const userRouter: Router = express.Router();
 
+
+
+userRouter.get("/get-user/:id", getUser);
 
 userRouter.post("/update-details/:id", verifyToken(true), updateUser);
 

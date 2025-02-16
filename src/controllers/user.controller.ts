@@ -4,6 +4,27 @@ import ErrorHandler from "../utils/ErrorHandler.ts";
 import AuthSchema from "../schema.models/auth.schema.ts";
 
 
+
+
+
+// Get User Details
+export const getUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await AuthSchema.findById(req.params.id).select("-password").lean();
+
+    if(user) {
+      res.status(200).json({ success: true, message: "User Details Fetched!", data: user });
+    } else {
+      return next(new ErrorHandler({ status: 404, message: "User not found!", success: false }));
+    }
+
+  } catch (error) {
+    next(mongooseErrorHandler(error));
+  }
+};
+
+
+
 // Update User
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   const { firstName, lastName, number, username } = req.body;
@@ -37,6 +58,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
       message: "Profile updated successfully!",
       data: updatedUser,
     });
+    
   } catch (error) {
     next(mongooseErrorHandler(error));
   }

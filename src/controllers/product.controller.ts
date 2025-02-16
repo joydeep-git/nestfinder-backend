@@ -32,7 +32,7 @@ export const ownerAllProducts = async (req: Request, res: Response, next: NextFu
 
         res.status(200).json({ success: true, message: `All Products of ${req.user!.firstName} fetched!`, data: allProducts });
 
-    } catch(err) {
+    } catch (err) {
         return next(mongooseErrorHandler(err));
     }
 
@@ -47,11 +47,7 @@ export const getProductDetails = async (req: Request, res: Response, next: NextF
     try {
         const productDetails = await ProductSchema.findById(req.params.productId);
 
-        if (productDetails?.userRef == req.user?._id) {
-            res.status(200).json({ success: true, message: "Product Details Fetched!", data: productDetails });
-        } else {
-            return next(new ErrorHandler({ status: 403, success: false, message: "You are not permitted!" }));
-        }
+        res.status(200).json({ success: true, message: "Property Details Fetched!", data: productDetails });
 
     } catch (err) {
         next(mongooseErrorHandler(err));
@@ -105,4 +101,19 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
         next(mongooseErrorHandler(err));
     }
 };
+
+
+
+// get all products and apply filters
+export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
+
+    const { search, furnished, offer, order, parking, sort, type } = req.params;
+
+    try{
+
+    } catch(err) {
+        next(mongooseErrorHandler(err));
+    }
+
+}
 
