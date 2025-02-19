@@ -47,6 +47,10 @@ export const getProductDetails = async (req: Request, res: Response, next: NextF
     try {
         const productDetails = await ProductSchema.findById(req.params.productId);
 
+        if(!productDetails) {
+            return next(new ErrorHandler({status: 404, success: false, message: "Invalid ID!"}));
+        }
+
         res.status(200).json({ success: true, message: "Property Details Fetched!", data: productDetails });
 
     } catch (err) {
