@@ -8,7 +8,7 @@ class UserRouter {
 
     constructor() {
 
-        this.router.post("/get-user/:id", UserController.getUser);
+        this.router.get("/get-user/:id", UserController.getUser);
         this.router.post("/update-details/:id", verifyTokenMiddleware, UserController.updateUser);
         this.router.post("/update-picture/:id", verifyTokenMiddleware, UserController.updateProfilePicture);
         this.router.delete("/delete-user/:id", verifyTokenMiddleware, UserController.deleteUser);
