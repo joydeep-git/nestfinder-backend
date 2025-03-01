@@ -14,6 +14,7 @@ class ProductRouter {
         this.router.post("/update-product/:id/:productId", verifyTokenMiddleware, validProductChecker, ProductController.updateProductDetails);
         this.router.delete("/delete-product/:id/:productId", verifyTokenMiddleware, ProductController.deleteProduct);
         this.router.get("/get", ProductController.getAllProducts);
+        this.router.post("/edit/:id/:productId", verifyTokenMiddleware, validProductChecker, ProductController.editProperty);
     }
 }
 
