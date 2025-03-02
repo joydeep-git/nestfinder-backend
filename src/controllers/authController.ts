@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import AuthSchema from "../schema.models/auth.schema.ts";
 import { fieldError, randomUsernameGenerator } from "../utils/utilityFunctions.ts";
-import { UserDataType } from "../types/index.types.ts";
+import { StatusCode, UserDataType } from "../types/index.types.ts";
 import ErrorHandler from "../utils/ErrorHandler.ts";
 import { mongooseErrorHandler } from "../utils/mongooseErrorHandler.ts";
 import jwt, { JwtPayload } from "jsonwebtoken";
@@ -51,7 +51,7 @@ class AuthController {
 
       const { password: _, ...userData } = user.toObject();
 
-      res.status(201).json({
+      res.status(StatusCode.OK).json({
         success: true,
         message: "Account registered successfully!",
         data: userData,
@@ -79,7 +79,7 @@ class AuthController {
 
       if (!existingUser) {
 
-        return next(new ErrorHandler({ status: 401, success: false, message: "No user found!" }));
+        return next(new ErrorHandler({ status: StatusCode.UNAUTHORIZED, success: false, message: "No user found!" }));
 
       } else {
 
@@ -87,7 +87,7 @@ class AuthController {
 
         if (!validatePassword) {
 
-          return next(new ErrorHandler({ status: 401, success: false, message: "Wrong password!" }));
+          return next(new ErrorHandler({ status: StatusCode.UNAUTHORIZED, success: false, message: "Wrong password!" }));
 
         } else {
 
@@ -98,7 +98,7 @@ class AuthController {
           const { password, ...userInfo } = existingUser._doc;
 
           res
-            .status(200)
+            .status(StatusCode.OK)
             .cookie("token", token, {
               httpOnly: true,
               secure: process.env.NODE_ENV === "production",
@@ -135,9 +135,9 @@ class AuthController {
     }
 
     try {
-      res.clearCookie("token").status(200).json({ status: 200, message: "Logged Out!", success: true });
+      res.clearCookie("token").status(StatusCode.OK).json({ status: StatusCode.OK, message: "Logged Out!", success: true });
     } catch (err) {
-      return next(new ErrorHandler({ status: 404, success: false, message: "Unable to logout!" }))
+      return next(new ErrorHandler({ status: StatusCode.NOT_FOUND, success: false, message: "Unable to logout!" }))
     }
 
   }
@@ -152,7 +152,7 @@ class AuthController {
       const token: string = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
       if (!token) {
-        return next(new ErrorHandler({ success: false, status: 403, message: "Please login!" }));
+        return next(new ErrorHandler({ success: false, status: StatusCode.FORBIDDEN, message: "Please login!" }));
       }
 
       // Verify token
@@ -161,17 +161,17 @@ class AuthController {
       const decoded = jwt.verify(token, secretKey) as JwtPayload;
 
       if (!decoded?.id) {
-        return next(new ErrorHandler({ success: false, status: 401, message: "Invalid token!" }));
+        return next(new ErrorHandler({ success: false, status: StatusCode.UNAUTHORIZED, message: "Invalid token!" }));
       }
 
       // Find user
       const user = await AuthSchema.findById(decoded.id).select("-password").lean();
 
       if (!user) {
-        return next(new ErrorHandler({ success: false, status: 404, message: "User not found!" }));
+        return next(new ErrorHandler({ success: false, status: StatusCode.NOT_FOUND, message: "User not found!" }));
       }
 
-      res.status(200).json({
+      res.status(StatusCode.OK).json({
         success: true,
         message: "User data fetched successfully.",
         data: user,
@@ -180,7 +180,7 @@ class AuthController {
     } catch (err: any) {
 
       if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError") {
-        return next(new ErrorHandler({ success: false, status: 401, message: "Invalid or expired token!" }));
+        return next(new ErrorHandler({ success: false, status: StatusCode.UNAUTHORIZED, message: "Invalid or expired token!" }));
       }
 
       console.log("Verfiy token error : ", err);

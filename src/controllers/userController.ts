@@ -3,6 +3,7 @@ import { mongooseErrorHandler } from "../utils/mongooseErrorHandler.ts";
 import ErrorHandler from "../utils/ErrorHandler.ts";
 import AuthSchema from "../schema.models/auth.schema.ts";
 import ProductSchema from "../schema.models/product.schema.ts";
+import { StatusCode } from "../types/index.types.ts";
 
 
 
@@ -16,9 +17,9 @@ class UserController {
       const user = await AuthSchema.findById(req.params.id).select("-password").lean();
 
       if (user) {
-        res.status(200).json({ success: true, message: "User Details Fetched!", data: user });
+        res.status(StatusCode.OK).json({ success: true, message: "User Details Fetched!", data: user });
       } else {
-        return next(new ErrorHandler({ status: 404, message: "User not found!", success: false }));
+        return next(new ErrorHandler({ status: StatusCode.NOT_FOUND, message: "User not found!", success: false }));
       }
 
     } catch (error) {
@@ -47,7 +48,7 @@ class UserController {
       if (existingUser) {
         return next(
           new ErrorHandler({
-            status: 401,
+            status: StatusCode.FORBIDDEN,
             message: "User already exists with same credentials.",
             success: false,
           })
@@ -61,7 +62,7 @@ class UserController {
         { new: true }
       ).select("-password");
 
-      res.status(200).json({
+      res.status(StatusCode.OK).json({
         success: true,
         message: "Profile updated successfully!",
         data: updatedUser,
@@ -89,7 +90,7 @@ class UserController {
         { new: true }
       ).select("-password");
 
-      res.status(200).json({
+      res.status(StatusCode.OK).json({
         success: true,
         message: "Profile updated successfully!",
         data: updatedUser,
@@ -110,7 +111,7 @@ class UserController {
 
       const deletedUser = await AuthSchema.findByIdAndDelete(req.user?._id).select("-password").lean();
 
-      if(!deletedUser) return next(new ErrorHandler({status: 404, success: false, message: "No user found!"}));
+      if(!deletedUser) return next(new ErrorHandler({status: StatusCode.NOT_FOUND, success: false, message: "No user found!"}));
 
       if(deletedUser?._id) {
 
@@ -119,7 +120,7 @@ class UserController {
 
       }
 
-      res.clearCookie("token").status(200).json({ success: true, message: "Account Deleted Successfully!", status: 200, data: deletedUser });
+      res.clearCookie("token").status(StatusCode.OK).json({ success: true, message: "Account Deleted Successfully!", status: StatusCode.OK, data: deletedUser });
 
     } catch (err) {
 
