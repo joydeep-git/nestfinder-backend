@@ -22,7 +22,13 @@ class Server {
 
 
 		this.app = express();
-		this.port = parseInt(process.env.PORT || "5001", 10);
+
+		// local
+		// this.port = parseInt(process.env.PORT || "5001", 10);
+
+		// deploy
+		this.port = parseInt(process.env.PORT as string, 10) || 5000;
+
 
 		this.run();
 
