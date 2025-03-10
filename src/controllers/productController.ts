@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import ProductSchema from "../schema.models/product.schema";
 import ErrorHandler from "../utils/ErrorHandler";
 import { mongooseErrorHandler } from "../utils/mongooseErrorHandler";
+import mongoose, { SortOrder } from "mongoose";
+import { StatusCode } from "../types/index.types";
 
 
 
@@ -16,7 +18,7 @@ class ProductController {
 
             await newProduct.save();
 
-            res.status(201).json({ success: true, message: "Registration Completed!", data: newProduct });
+            res.status(StatusCode.CREATED).json({ success: true, message: "Registration Completed!", data: newProduct });
 
         } catch (err) {
             next(mongooseErrorHandler(err));
@@ -26,14 +28,14 @@ class ProductController {
 
 
 
-    // get all registered property  of a ownner
+    // get all registered property  of an owner
     static async ownerAllProducts(req: Request, res: Response, next: NextFunction) {
 
         try {
 
             const allProducts = await ProductSchema.find({ userRef: req.user!._id }).lean();
 
-            res.status(200).json({ success: true, message: `All Products of ${req.user!.firstName} fetched!`, data: allProducts });
+            res.status(StatusCode.OK).json({ success: true, message: `All Products of ${req.user!.firstName} fetched!`, data: allProducts });
 
         } catch (err) {
             return next(mongooseErrorHandler(err));
@@ -50,10 +52,10 @@ class ProductController {
             const productDetails = await ProductSchema.findById(req.params.productId);
 
             if (!productDetails) {
-                return next(new ErrorHandler({ status: 404, success: false, message: "Invalid ID!" }));
+                return next(new ErrorHandler({ status: StatusCode.NOT_FOUND, success: false, message: "Invalid ID!" }));
             }
 
-            res.status(200).json({ success: true, message: "Property Details Fetched!", data: productDetails });
+            res.status(StatusCode.OK).json({ success: true, message: "Property Details Fetched!", data: productDetails });
 
         } catch (err) {
             next(mongooseErrorHandler(err));
@@ -73,9 +75,9 @@ class ProductController {
             const productDetails = await ProductSchema.findById(productId);
 
             if (String(productDetails?.userRef) === id) {
-                res.status(200).json({ success: true, message: "Product Details Fetched!", data: productDetails });
+                res.status(StatusCode.OK).json({ success: true, message: "Product Details Fetched!", data: productDetails });
             } else {
-                next(new ErrorHandler({ status: 403, success: false, message: "You are not permitted!" }));
+                next(new ErrorHandler({ status: StatusCode.FORBIDDEN, success: false, message: "You are not permitted!" }));
             }
 
         } catch (err) {
@@ -94,16 +96,16 @@ class ProductController {
             const product = await ProductSchema.findById(req.params.productId).lean();
 
             if (!product) {
-                return next(new ErrorHandler({ status: 404, message: "Product not found!", success: false }));
+                return next(new ErrorHandler({ status: StatusCode.NOT_FOUND, message: "Product not found!", success: false }));
             }
 
             if (String(product.userRef) !== String(req.user?._id)) {
-                return next(new ErrorHandler({ status: 403, message: "You are not permitted!", success: false }));
+                return next(new ErrorHandler({ status: StatusCode.FORBIDDEN, message: "You are not permitted!", success: false }));
             }
 
             const data = await ProductSchema.findByIdAndDelete(req.params.productId);
 
-            res.status(200).json({ success: true, message: "Product Deleted Successfully!", data });
+            res.status(StatusCode.OK).json({ success: true, message: "Product Deleted Successfully!", data });
 
         } catch (err) {
             next(mongooseErrorHandler(err));
@@ -112,23 +114,81 @@ class ProductController {
     }
 
 
+    
 
-
-    // property search results with filters
+    // Property search with filters
     static async getAllProducts(req: Request, res: Response, next: NextFunction) {
-
-        const { search, furnished, offer, order, parking, sort, type } = req.params;
+        const { search, furnished, order, parking, sort, type } = req.query;
 
         try {
 
-            const properties = await ProductSchema.find().lean();
+            // sort values
+            const sortBy: string = sort?.toString() || "createdAt";
+            const orderBy: SortOrder = order === "desc" ? -1 : 1;
 
-            res.status(201).json({success: true, status: 200, message: "All properties fetched!", data: properties});
+            const sortOptions: { [key: string]: SortOrder } = { [sortBy]: orderBy };
+
+
+            // filter object
+            const filter: { name?: any; type?: any; furnished?: any; parking?: any; } = {};
+
+            if (search) {
+                filter.name = { $regex: search, $options: "i" };
+            }
+
+            filter.type = type && type !== "all" ? type : { $in: ["rent", "sell"] };
+
+            filter.furnished = furnished === "true" ? true : furnished === "false" ? false : { $in: [false, true] };
+
+            filter.parking = parking === "true" ? true : parking === "false" ? false : { $in: [false, true] };
+
+            // Fetch properties
+            const properties = await ProductSchema.find(filter).sort(sortOptions).lean();
+
+            res.status(StatusCode.OK).json({ success: true, message: "All properties fetched!", data: properties });
 
         } catch (err) {
             next(mongooseErrorHandler(err));
         }
+    }
 
+
+
+
+    static async editProperty(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { productId } = req.params;
+
+
+            // Validate ObjectId
+            if (!mongoose.Types.ObjectId.isValid(productId)) {
+                return res.status(StatusCode.BAD_REQUEST).json({ success: false, message: "Invalid Product ID" });
+            }
+
+            const validProduct = await ProductSchema.findById(productId).lean();
+
+            // Product existence check
+            if (!validProduct) {
+                return res.status(StatusCode.NOT_FOUND).json({ success: false, message: "Product not found!" });
+            }
+
+            // User ownership validation
+            if (validProduct.userRef.toString() !== req.user?._id.toString()) {
+                return res.status(StatusCode.FORBIDDEN).json({ success: false, message: "Unauthorized!" });
+            }
+
+            // Update product
+            const updatedProduct = await ProductSchema.findByIdAndUpdate(
+                productId,
+                { $set: req.body },
+                { new: true, runValidators: true }
+            ).lean();
+
+            return res.status(StatusCode.OK).json({ success: true, message: "Product Updated!", data: updatedProduct });
+
+        } catch (err) {
+            return next(mongooseErrorHandler(err));
+        }
     }
 
 

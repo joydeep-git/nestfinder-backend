@@ -183,8 +183,6 @@ class AuthController {
         return next(new ErrorHandler({ success: false, status: StatusCode.UNAUTHORIZED, message: "Invalid or expired token!" }));
       }
 
-      console.log("Verfiy token error : ", err);
-
       return next(mongooseErrorHandler(err));
     }
 
