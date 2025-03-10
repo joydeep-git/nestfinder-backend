@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import AuthSchema from "../schema.models/auth.schema";
-import { fieldError, randomUsernameGenerator } from "../utils/utilityFunctions";
-import { StatusCode, UserDataType } from "../types/index.types";
+import { NextFunction, Request, Response } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import AuthSchema from "../mongodbSchema/authSchema";
+import { StatusCode, UserDataType } from "../types";
 import ErrorHandler from "../utils/ErrorHandler";
 import { mongooseErrorHandler } from "../utils/mongooseErrorHandler";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import { fieldError, randomUsernameGenerator } from "../utils/utilityFunctions";
 
 
 class AuthController {

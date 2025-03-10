@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import ProductSchema from "../schema.models/product.schema";
+import mongoose, { SortOrder } from "mongoose";
+import ProductSchema from "../mongodbSchema/productSchema";
+import { StatusCode } from "../types";
 import ErrorHandler from "../utils/ErrorHandler";
 import { mongooseErrorHandler } from "../utils/mongooseErrorHandler";
-import mongoose, { SortOrder } from "mongoose";
-import { StatusCode } from "../types/index.types";
 
 
 

@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { mongooseErrorHandler } from "../utils/mongooseErrorHandler";
+import AuthSchema from "../mongodbSchema/authSchema";
+import ProductSchema from "../mongodbSchema/productSchema";
+import { StatusCode } from "../types";
 import ErrorHandler from "../utils/ErrorHandler";
-import AuthSchema from "../schema.models/auth.schema";
-import ProductSchema from "../schema.models/product.schema";
-import { StatusCode } from "../types/index.types";
+import { mongooseErrorHandler } from "../utils/mongooseErrorHandler";
 
 
 

@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import AuthSchema from "../mongodbSchema/authSchema";
+import { UserDetailsType } from "../types";
 import ErrorHandler from "../utils/ErrorHandler";
 import { mongooseErrorHandler } from "../utils/mongooseErrorHandler";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import AuthSchema from "../schema.models/auth.schema";
-import { UserDetailsType } from "../types/index.types";
 
 const verifyTokenMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 

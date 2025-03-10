@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
+import { StatusCode } from "../types";
 import ErrorHandler from "../utils/ErrorHandler";
-import { StatusCode } from "../types/index.types";
 
 const validProductChecker = (req: Request, res: Response, next: NextFunction) => {
     

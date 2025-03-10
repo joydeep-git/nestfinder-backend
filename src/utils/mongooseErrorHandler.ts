@@ -1,4 +1,4 @@
-import { StatusCode } from "../types/index.types";
+import { StatusCode } from "../types";
 import ErrorHandler from "./ErrorHandler";
 
 export const mongooseErrorHandler = (err: any) => {
