@@ -26,7 +26,7 @@ export type UserDetailsType = {
   avatar: string;
   createdAt?: Date;
   updatedAt?: Date;
-  _id: string | ObjectId | unknown;
+  _id: string;
   __v: number;
 };
 
