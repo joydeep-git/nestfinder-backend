@@ -66,7 +66,7 @@ class Server {
 				throw new Error("DB variables are missing!");
 			}
 
-			const mongodbStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_CLUSTER}.giap0.mongodb.net/?retryWrites=true&w=majority&appName=${process.env.MONGODB_CLUSTER}`;
+			const mongodbStr: string = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_CLUSTER}.giap0.mongodb.net/?retryWrites=true&w=majority&appName=${process.env.MONGODB_CLUSTER}`;
 
 			await mongoose.connect(mongodbStr);
 			console.log("Database Status: LIVE");
