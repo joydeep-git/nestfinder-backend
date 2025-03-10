@@ -3,6 +3,7 @@ import ErrorHandler from "../utils/ErrorHandler";
 import { mongooseErrorHandler } from "../utils/mongooseErrorHandler";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import AuthSchema from "../schema.models/auth.schema";
+import { UserDetailsType } from "../types/index.types";
 
 const verifyTokenMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -24,7 +25,7 @@ const verifyTokenMiddleware = async (req: Request, res: Response, next: NextFunc
         }
 
         // Find user
-        const user = await AuthSchema.findById(decoded.id).select("-password").lean();
+        const user: UserDetailsType = Object( await AuthSchema.findById(decoded.id).select("-password").lean() );
 
         if (!user) {
             return next(new ErrorHandler({ success: false, status: 404, message: "User not found!" }));
