@@ -1,7 +1,7 @@
 import express, { Router } from "express";
-import validProductChecker from "../middlewares/ValidProductChecker.ts";
-import verifyTokenMiddleware from "../middlewares/verifyTokenMiddleware.ts";
-import ProductController from "../controllers/productController.ts";
+import validProductChecker from "../middlewares/ValidProductChecker";
+import verifyTokenMiddleware from "../middlewares/verifyTokenMiddleware";
+import ProductController from "../controllers/productController";
 
 
 class ProductRouter {

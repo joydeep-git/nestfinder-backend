@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import AuthSchema from "../schema.models/auth.schema.ts";
-import { fieldError, randomUsernameGenerator } from "../utils/utilityFunctions.ts";
-import { StatusCode, UserDataType } from "../types/index.types.ts";
-import ErrorHandler from "../utils/ErrorHandler.ts";
-import { mongooseErrorHandler } from "../utils/mongooseErrorHandler.ts";
+import AuthSchema from "../schema.models/auth.schema";
+import { fieldError, randomUsernameGenerator } from "../utils/utilityFunctions";
+import { StatusCode, UserDataType } from "../types/index.types";
+import ErrorHandler from "../utils/ErrorHandler";
+import { mongooseErrorHandler } from "../utils/mongooseErrorHandler";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 

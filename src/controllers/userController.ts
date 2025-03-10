@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { mongooseErrorHandler } from "../utils/mongooseErrorHandler.ts";
-import ErrorHandler from "../utils/ErrorHandler.ts";
-import AuthSchema from "../schema.models/auth.schema.ts";
-import ProductSchema from "../schema.models/product.schema.ts";
-import { StatusCode } from "../types/index.types.ts";
+import { mongooseErrorHandler } from "../utils/mongooseErrorHandler";
+import ErrorHandler from "../utils/ErrorHandler";
+import AuthSchema from "../schema.models/auth.schema";
+import ProductSchema from "../schema.models/product.schema";
+import { StatusCode } from "../types/index.types";
 
 
 

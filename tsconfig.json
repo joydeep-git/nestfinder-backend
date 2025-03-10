@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "allowImportingTsExtensions": true,
-    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": false,
+    "emitDeclarationOnly": false, //
     "declaration": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

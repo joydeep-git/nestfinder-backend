@@ -1,6 +1,6 @@
 import express, {Router} from "express";
-import verifyTokenMiddleware from "../middlewares/verifyTokenMiddleware.ts";
-import UserController from "../controllers/userController.ts";
+import verifyTokenMiddleware from "../middlewares/verifyTokenMiddleware";
+import UserController from "../controllers/userController";
 
 class UserRouter {
 

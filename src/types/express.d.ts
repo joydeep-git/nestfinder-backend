@@ -1,4 +1,4 @@
-import {UserDetailsType} from "./index.types.ts";
+import { UserDetailsType } from "./index.types";
 
 declare global {
   namespace Express {

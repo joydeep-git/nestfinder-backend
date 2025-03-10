@@ -1,5 +1,5 @@
 import mongoose, { Model } from "mongoose";
-import { AuthModelType } from "../types/index.types.ts";
+import { AuthModelType } from "../types/index.types";
 
 
 const auth = new mongoose.Schema(
