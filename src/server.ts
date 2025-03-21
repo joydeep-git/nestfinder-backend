@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express, { Application, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import mongoose from "mongoose";
@@ -100,6 +100,11 @@ class Server {
 		this.app.use("/api/auth", authRouter);
 		this.app.use("/api/user", userRouter);
 		this.app.use("/api/product", productRouter);
+
+		// preventing render server from sleeping
+		this.app.get("/api/alive", (_, res: Response) => {
+			res.status(200).json({ success: true, message: "Server is alive", data: {} });
+		});
 	}
 
 
