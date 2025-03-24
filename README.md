@@ -10,7 +10,7 @@ This is the backend API for **Nest Finder**, a property listing and buying platf
 - User registration (Signup)  
 - User login with JWT authentication  
 - Secure cookie-based authentication
-- Cookie timeout status check on every page load
+- Cookie timeout status check on every page load ( timeout after 24 hours )
 - Logout functionality
 - Middleware for protected routes  
 
@@ -21,14 +21,15 @@ This is the backend API for **Nest Finder**, a property listing and buying platf
 
 ✅ **Property Listings**  
 - Add new properties  
-- Fetch all properties  
+- Fetch all properties
+- Fetch the owner's listed properties
 - Fetch a single property by ID  
 - Update property details  
 - Delete a property  
 
 ✅ **Search & Filters**  
 - Search properties by location  
-- Filter by price, size, and amenities  
+- Filter by price and amenities  
 
 
 ✅ **Secure API & Middlewares**  
