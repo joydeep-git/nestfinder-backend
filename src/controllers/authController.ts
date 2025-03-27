@@ -135,7 +135,13 @@ class AuthController {
     }
 
     try {
-      res.clearCookie("token").status(StatusCode.OK).json({ status: StatusCode.OK, message: "Logged Out!", success: true });
+      res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        path: "/",
+      });
+      res.status(StatusCode.OK).json({ status: StatusCode.OK, message: "Logged Out!", success: true });
     } catch (err) {
       return next(new ErrorHandler({ status: StatusCode.NOT_FOUND, success: false, message: "Unable to logout!" }))
     }
