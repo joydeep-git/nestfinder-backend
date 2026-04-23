@@ -83,7 +83,7 @@ class Server {
 	private useMiddleWares() {
 
 		this.app.use(cors({
-			origin: [process.env.CLIENT_URL, "http://localhost:3000"], // frontend URL
+			origin: [process.env.CLIENT_URL as string, "http://localhost:3000"], // frontend URL
 			methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 			credentials: true, // Allow cookies
 		}));
